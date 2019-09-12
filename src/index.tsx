@@ -4,6 +4,22 @@ import $ from 'jquery';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
 
+interface IDeviceState {
+    instanceOf: String;
+    name: String;
+    address: number;
+    id: number;
+    mode: String;
+}
+
+interface IDeviceProps {
+    initialState: IDeviceState;
+}
+
+interface IGroupState {
+    devices: Array<Object>;
+}
+
 class DeviceCard extends React.Component<IDeviceProps, any> {
     constructor(props: IDeviceProps) {
         super(props);
@@ -71,6 +87,7 @@ class PwmLightCard extends LightCard {
 
         this.changeBrightness = this.changeBrightness.bind(this);
     }
+
     getHexBrightness() {
         return "#" + this.state.brightness.toString(16) + this.state.brightness.toString(16) + this.state.brightness.toString(16)
     }
@@ -89,8 +106,10 @@ class PwmLightCard extends LightCard {
                     <p>Name: {this.state.name} (#{this.state.id})</p>
                     <p>Address: {this.state.address}</p>
                 </div>
-                <div className="card-footer" style={{backgroundColor: this.state.mode === "ON" ? this.getHexBrightness() : "#000"}}>
-                    <input onChange={this.changeBrightness} type="range" name="brightness" min="0" max="255" step="10" value={this.state.brightness}/>
+                <div className="card-footer"
+                     style={{backgroundColor: this.state.mode === "ON" ? this.getHexBrightness() : "#000"}}>
+                    <input onChange={this.changeBrightness} type="range" name="brightness" min="0" max="255" step="10"
+                           value={this.state.brightness}/>
                     <button onClick={this.toggleMode} className="btn btn-primary">
                         <i className="fas fa-power-off"></i>
                     </button>
@@ -142,22 +161,6 @@ class RgbLightCard extends LightCard {
         </div>
 }
 
-interface IDeviceState {
-    instanceOf: String;
-    name: String;
-    address: number;
-    id: number;
-    mode: String;
-}
-
-interface IDeviceProps {
-    initialState: IDeviceState;
-}
-
-interface IGroupState {
-    devices: Array<Object>;
-}
-
 class DeviceCardGroup extends React.Component {
     state: IGroupState;
 
@@ -184,15 +187,128 @@ class DeviceCardGroup extends React.Component {
                     return <RgbLightCard key={item.id} initialState={item}/>
                 else if (item.instanceOf === "pwmlight")
                     return <PwmLightCard key={item.id} initialState={item}/>
-               else
+                else
                     return <DeviceCard key={item.id} initialState={item}/>
             })}
         </div>
 }
 
+class Navbar extends React.Component<any, any> {
+
+    constructor({props}: { props: any }) {
+        super(props);
+    }
+
+    render = () =>
+        <nav className="navbar navbar-expand-lg navbar-light bg-light">
+            <a className="navbar-brand" href="#">HomeSense 2</a>
+            <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span className="navbar-toggler-icon"></span>
+            </button>
+            <div className="collapse navbar-collapse" id="navbarNav">
+                <ul className="navbar-nav">
+                    <li className="nav-item active">
+                        <a className="nav-link" href="#">Devices</a>
+                    </li>
+                    <li className="nav-item">
+                        <a className="nav-link" href="#" onClick={this.props.modalToggler}>Add a device</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+}
+
+class NewDeviceModal extends React.Component<any, any> {
+
+    constructor({props}: { props: any }) {
+        super(props);
+
+        let self = this;
+        $.getJSON("http://" + window.location.hostname + ":8080/hs2/devices/supported")
+            .done(function (data) {
+                self.setState({deviceTypes: data})
+            });
+    }
+
+    getTypesArray() {
+        return ["poo", "bleh", "no"];
+    }
+
+    render() {
+        if (!this.props.show) {
+            return null;
+        }
+
+        const backdropStyle = {
+            position: 'fixed' as 'fixed',
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            backgroundColor: 'rgba(0,0,0,0.3)',
+            padding: 50
+        };
+
+        const modalStyle = {
+            backgroundColor: '#fff',
+            borderRadius: 5,
+            maxWidth: 500,
+            minHeight: 300,
+            margin: '0 auto',
+            padding: 30
+        };
+
+        return (
+            <div className="backdrop2" style={backdropStyle}>
+                <div className="modal2" style={modalStyle}>
+                    <h2>Add a new device</h2>
+                    Type: <input list="types" id="type"/>
+                    Name: <input type="text" id="name"/>
+                    Address: <input type="number" id="address"/>
+
+                    <datalist id="types">
+                        {this.state.deviceTypes.map((item: any) =>
+                            <option value={item}/>
+                        )
+                        }
+                    </datalist>
+                    <div className="footer2">
+                        <button onClick={this.props.onClose}>
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+}
+
+class App extends React.Component<any, any> {
+
+    constructor({props}: { props: any }) {
+        super(props);
+
+        this.state = {modalOpen: false};
+    }
+
+    toggleModal = () => {
+        this.setState({modalOpen: !this.state.modalOpen});
+    }
+
+    render = () =>
+        <div>
+            <Navbar modalToggler={this.toggleModal}/>
+            <DeviceCardGroup/>
+            <div className="App">
+                <NewDeviceModal show={this.state.modalOpen} onClose={this.toggleModal}/>
+            </div>
+        </div>
+}
+
 ReactDOM.render(
-    <DeviceCardGroup/>,
-    $("#reactRoot")[0]
+    <App/>,
+    $("#container-fluid")[0]
 )
 
 // If you want your app to work offline and load faster, you can change
