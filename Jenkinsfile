@@ -17,15 +17,13 @@ pipeline {
 
         stage('Test') {
             steps {
-                sh 'npm -g list'
-                sh 'npm list'
+                sh 'npm test'
             }
         }
 
         stage('Deploy') {
             steps {
-                sh 'pwd'
-                sh 'whoami'
+                sh 'scp -r /'
             }
         }
     }
