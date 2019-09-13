@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'node:current-alpine'
-            args '-p 3000:3000 -v /usr/local/lib/node_modules:/usr/local/lib/node_modules'
+            args '-p 3000:3000 -v ~/.npm:/.npm ~/.cache:/.cache'
         }
     }
     environment {
