@@ -18,6 +18,7 @@ pipeline {
         stage('Test') {
             steps {
                 sh 'npm -g list'
+                sh 'npm list'
             }
         }
 
