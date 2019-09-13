@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'node:current-alpine'
-            args '-p 3000:3000 -v node_module:/var/jenkins_home/workspace/HomeSense2-React-GUI_master/node_module'
+            args '-p 3000:3000 -v node_module:/var/jenkins_home/workspace/HomeSense2-React-GUI_master/node_modules'
         }
     }
     environment {
