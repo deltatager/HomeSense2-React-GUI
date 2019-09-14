@@ -23,7 +23,7 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                sh 'scp -r /'
+                echo 'nothing yet!'
             }
         }
     }
