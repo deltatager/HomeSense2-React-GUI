@@ -12,6 +12,7 @@ pipeline {
         stage('Build') {
             steps {
                 sh 'npm install'
+                sh 'npm build'
             }
         }
 
@@ -23,7 +24,7 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                echo 'nothing yet!'
+                sh 'ls -l'
             }
         }
     }
