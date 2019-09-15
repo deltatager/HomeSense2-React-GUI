@@ -1,10 +1,11 @@
 pipeline {
+agent none
     agent {
         docker {
             image 'node:current-alpine'
-            args '-p 3000:3000 -v node_module:/var/jenkins_home/workspace/HomeSense2-React-GUI_master/node_modules'
+            args '-v node_module:/var/jenkins_home/workspace/HomeSense2-React-GUI_master/node_modules'
         }
-    }
+    } 
     environment {
         CI = 'true' 
     }
