@@ -22,7 +22,7 @@
 //     expect(actual).toEqual(expected);
 // }, 100000);
 
-it(() => {
+it('Test', () => {
     expect(5).toEqual(5);
     }
 );

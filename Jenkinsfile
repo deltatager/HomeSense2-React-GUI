@@ -5,6 +5,9 @@ pipeline {
             args '-v node_module:/var/jenkins_home/workspace/HomeSense2-React-GUI_master/node_modules'
         }
     }
+    environment {
+            CI = 'true'
+        }
     stages {
         stage('Build') {
             steps {
