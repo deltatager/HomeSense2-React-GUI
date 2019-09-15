@@ -24,7 +24,7 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                sh 'ls -l'
+                sh 'ls -l build'
             }
         }
     }
