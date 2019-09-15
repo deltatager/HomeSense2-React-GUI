@@ -14,3 +14,5 @@ it('Changing google.com language', async () => {
     await driver.quit();
     expect(actual).toEqual(expected);
 }, 100000);
+
+driver.quit();
