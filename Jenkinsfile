@@ -24,8 +24,8 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                sh 'ssh pi@pi1.deltanet.int "rm -F /var/www/homesense2/*"'
-                //sh 'scp -r build pi@pi1.deltanet.int:/var/www/homesense2'
+                sh 'ssh pi@pi1.deltanet.int "rm -f /var/www/homesense2/*"'
+                sh 'scp -r build pi@pi1.deltanet.int:/var/www/homesense2'
             }
         }
     }
