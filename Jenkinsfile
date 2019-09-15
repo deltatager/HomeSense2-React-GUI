@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'node:current-alpine'
+            image 'node:latest'
             args '-v node_module:/var/jenkins_home/workspace/HomeSense2-React-GUI_master/node_modules'
         }
     }
