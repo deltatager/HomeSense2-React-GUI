@@ -11,7 +11,7 @@ beforeAll(() => {
 });
 
 afterAll(() => {
-    driver.quit().done();
+    driver.quit();
 });
 
 it('Changing google.com language', async () => {
