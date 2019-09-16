@@ -29,6 +29,12 @@ pipeline {
             }
         }
 
+        stage('Archiving') {
+              steps {
+                archiveArtifacts 'build.tar.gz'
+              }
+            }
+
         stage('Deploy') {
             steps {
                 sh 'ssh pi@pi1.deltanet.int "rm -rf /var/www/homesense2/*"'
