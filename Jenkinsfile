@@ -14,6 +14,7 @@ pipeline {
                 sh 'npm install'
                 sh 'npm run build'
                 zip 'build.zip' './build'
+                //
             }
         }
 
