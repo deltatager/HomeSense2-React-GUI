@@ -12,7 +12,10 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --watchAll=false",
+    "test": "react-scripts-ts test --env=jsdom",
+    "test:ci": "react-scripts-ts test --env=jsdom --testResultsProcessor ./node_modules/jest-junit --coverage --coverageDirectory=coverage",
+    "coverage": "react-scripts-ts test --env=jsdom --coverage",
+
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -31,10 +34,27 @@
     ]
   },
   "jest": {
-    "reporters": [
-      "default",
-      "jest-junit"
+    "collectCoverageFrom": [
+      "**/*.{ts,tsx}",
+      "!**/node_modules/**",
+      "!**/build/**",
+      "!**/definitionfiles/**",
+      "!**/WebWrokers/**",
+      "!**/*.mock.ts",
+      "!src/setupTests.ts"
+    ],
+    "coverageReporters": [
+      "lcov",
+      "text"
     ]
+  },
+  "jest-junit": {
+    "suiteName": "jest tests",
+    "output": "coverage/junit.xml",
+    "classNameTemplate": "{classname} - {title}",
+    "titleTemplate": "{classname} - {title}",
+    "ancestorSeparator": " > ",
+    "usePathForSuiteName": "true"
   },
   "devDependencies": {
     "@types/jest": "24.0.13",
