@@ -13,7 +13,7 @@ pipeline {
             steps {
                 sh 'npm install'
                 sh 'npm run build'
-                zip 'build.zip' './build'
+                sh 'zip ./build'
             }
         }
 
