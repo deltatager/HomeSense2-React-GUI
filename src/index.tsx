@@ -266,6 +266,7 @@ class NewDeviceModal extends React.Component<any, any> {
                     Type: <input list="types" id="type"/>
                     Name: <input type="text" id="name"/>
                     Address: <input type="number" id="address"/>
+                    <button> Create device </button>
 
                     <datalist id="types">
                         {this.state.deviceTypes.map((item: any) =>
