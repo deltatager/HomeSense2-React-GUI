@@ -17,6 +17,11 @@ pipeline {
         }
 
         stage('Test') {
+            post {
+                always {
+                  junit 'target/surefire-reports/*.xml'
+                }
+              }
             steps {
                 sh 'npm test'
                 sh 'ls -l'
