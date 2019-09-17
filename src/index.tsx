@@ -224,15 +224,24 @@ class NewDeviceModal extends React.Component<any, any> {
     constructor({props}: { props: any }) {
         super(props);
 
+        this.state = {devicesTypes: undefined, type: undefined, name: undefined, address: undefined};
+
         let self = this;
         $.getJSON("http://" + window.location.hostname + ":8080/hs2/devices/supported")
             .done(function (data) {
                 self.setState({deviceTypes: data})
             });
+
+        this.sendPutRequest = this.sendPutRequest.bind(this);
+        this.onChangeHandler = this.onChangeHandler.bind(this);
     }
 
-    getTypesArray() {
-        return ["poo", "bleh", "no"];
+    sendPutRequest() {
+
+    }
+
+    onChangeHandler() {
+        console.log(this)
     }
 
     render() {
@@ -263,9 +272,9 @@ class NewDeviceModal extends React.Component<any, any> {
             <div className="backdrop2" style={backdropStyle}>
                 <div className="modal2" style={modalStyle}>
                     <h2>Add a new device</h2>
-                    Type: <input list="types" id="type"/>
-                    Name: <input type="text" id="name"/>
-                    Address: <input type="number" id="address"/>
+                    Type: <input onChange={this.onChangeHandler} list="types" id="type"/>
+                    Name: <input onChange={this.onChangeHandler} type="text" id="name"/>
+                    Address: <input onChange={this.onChangeHandler} type="number" id="address"/>
                     <button> Create device </button>
 
                     <datalist id="types">
