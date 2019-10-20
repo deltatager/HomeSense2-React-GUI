@@ -4,6 +4,9 @@ import $ from 'jquery';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
 
+const JAVA_BACKEND_IP = "pi1.deltanet.int";
+//const JAVA_BACKEND_IP = window.location.hostname;
+
 interface IDeviceState {
     instanceOf: String;
     name: String;
@@ -31,7 +34,7 @@ class DeviceCard extends React.Component<IDeviceProps, any> {
     updateRemoteState(): void {
         let self = this;
         $.ajax({
-            url: "http://" + window.location.hostname + ":8080/hs2/" + this.state.instanceOf + "s/" + this.state.id,
+            url: "http://" + JAVA_BACKEND_IP + ":8080/hs2/" + this.state.instanceOf + "s/" + this.state.id,
             type: 'PUT',
             contentType: "application/json",
             data: JSON.stringify(this.state)
@@ -42,7 +45,7 @@ class DeviceCard extends React.Component<IDeviceProps, any> {
     }
 
     render = () =>
-        <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3 my-3">
+        <div className="col-6 col-lg-4 col-xl-3 my-3">
             <div className="card">
                 <div className="card-body">
                     <p>Name: {this.state.name} (#{this.state.id})</p>
@@ -65,7 +68,7 @@ class LightCard extends DeviceCard {
     }
 
     render = () =>
-        <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3 my-3">
+        <div className="col-6 col-lg-4 col-xl-3 my-3">
             <div className="card">
                 <div className="card-body">
                     <p>Name: {this.state.name} (#{this.state.id})</p>
@@ -73,7 +76,7 @@ class LightCard extends DeviceCard {
                 </div>
                 <div className="card-footer" style={{backgroundColor: this.state.mode === "ON" ? "#eee" : "#000"}}>
                     <button onClick={this.toggleMode} className="d-block mx-auto btn btn-primary"
-                            style={{width: "200px"}}><i className="fas fa-power-off"></i> Toggle light
+                            style={{width: "100%"}}><i className="fas fa-power-off"></i> Toggle light
                     </button>
                 </div>
             </div>
@@ -100,7 +103,7 @@ class PwmLightCard extends LightCard {
     }
 
     render = () =>
-        <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3 my-3">
+        <div className="col-6 col-lg-4 col-xl-3 my-3">
             <div className="card">
                 <div className="card-body">
                     <p>Name: {this.state.name} (#{this.state.id})</p>
@@ -108,7 +111,7 @@ class PwmLightCard extends LightCard {
                 </div>
                 <div className="card-footer"
                      style={{backgroundColor: this.state.mode === "ON" ? this.getHexBrightness() : "#000"}}>
-                    <input onChange={this.changeBrightness} type="range" name="brightness" min="0" max="255" step="10"
+                    <input className="mr-3" style={{width: "50%"}} onChange={this.changeBrightness} type="range" name="brightness" min="0" max="255" step="5"
                            value={this.state.brightness}/>
                     <button onClick={this.toggleMode} className="btn btn-primary">
                         <i className="fas fa-power-off"></i>
@@ -141,7 +144,7 @@ class RgbLightCard extends LightCard {
     }
 
     render = () =>
-        <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3 my-3">
+        <div className="col-6 col-lg-4 col-xl-3 my-3">
             <div className="card">
                 <div className="card-body">
                     <p>Name: {this.state.name} (#{this.state.id})</p>
@@ -150,8 +153,8 @@ class RgbLightCard extends LightCard {
                 <div className="card-footer"
                      style={{backgroundColor: this.state.mode === "ON" ? this.getHexColor() : "#000000"}}>
                     <div className="d-block mx-auto" style={{width: "200px"}}>
-                        <input onChange={this.changeColor} type="color"
-                               value={this.getHexColor()}/>
+                        <input className="mr-3" onChange={this.changeColor} type="color"
+                               value={this.getHexColor()} style={{width: "30%"}} />
                         <button onClick={this.toggleMode} className="btn btn-primary">
                             <i className="fas fa-power-off"></i>
                         </button>
@@ -171,7 +174,7 @@ class DeviceCardGroup extends React.Component {
 
     componentDidMount(): void {
         let self = this;
-        $.getJSON("http://" + window.location.hostname + ":8080/hs2/devices")
+        $.getJSON("http://" + JAVA_BACKEND_IP + ":8080/hs2/devices")
             .done(function (data) {
                 self.setState({devices: data})
             });
@@ -227,20 +230,29 @@ class NewDeviceModal extends React.Component<any, any> {
         this.state = {devicesTypes: undefined, type: undefined, name: undefined, address: undefined};
 
         let self = this;
-        $.getJSON("http://" + window.location.hostname + ":8080/hs2/devices/supported")
+        $.getJSON("http://" + JAVA_BACKEND_IP + ":8080/hs2/devices/supported")
             .done(function (data) {
                 self.setState({deviceTypes: data})
             });
 
-        this.sendPutRequest = this.sendPutRequest.bind(this);
+        this.sendPostRequest = this.sendPostRequest.bind(this);
         this.onChangeHandler = this.onChangeHandler.bind(this);
     }
 
-    sendPutRequest() {
-
+    sendPostRequest(): void {
+        let self = this;
+        $.ajax({
+            url: "http://" + JAVA_BACKEND_IP + ":8080/hs2/devices",
+            type: 'POST',
+            contentType: "application/json",
+            data: JSON.stringify(this.state)
+        }).done(function (data) {
+            data = JSON.parse(data);
+            self.setState(data);
+        });
     }
 
-    onChangeHandler() {
+    onChangeHandler(): void {
         console.log(this)
     }
 
