@@ -183,7 +183,6 @@ class DeviceCardGroup extends React.Component {
     render = () =>
         <div className="row">
             {this.state.devices.map((item: any) => {
-                item = JSON.parse(item);
                 if (item.instanceOf === "light")
                     return <LightCard key={item.id} initialState={item}/>
                 else if (item.instanceOf === "rgblight")
